@@ -1,0 +1,16 @@
+services:
+
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: inventory
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+    ports:
+        - "5432:5432"
+  cache:
+    image: redis:latest
+    container_name: redis_cache
+    ports:
+        - "6379:6379"
