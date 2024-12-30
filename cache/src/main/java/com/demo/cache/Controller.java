@@ -28,31 +28,29 @@ public class Controller {
 
     @GetMapping("/{id}")
     @Cacheable(value = "product", key = "#id")
-    public ResponseEntity<Prouduct> getProductById(@PathVariable long id) {
-        return repo.findById(id).map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public Prouduct getProductById(@PathVariable long id) {
+        return repo.findById(id).orElse(null);
 
     }
 
     @PutMapping("/{id}")
     @CachePut(cacheNames = "product", key = "#id")
-    public ResponseEntity<Prouduct> updateProduct(@PathVariable long id, @RequestBody Prouduct product) {
+    public Prouduct updateProduct(@PathVariable long id, @RequestBody Prouduct product) {
         return repo.findById(id)
-                .map(p -> ResponseEntity.ok(repo.save(
+                .map(p -> repo.save(
                         p.setName(product.getName())
                         .setCode(product.getCode())
                         .setPrice(product.getPrice())
                         .setQuantity(product.getQuantity()))
-                        )
+
                 )
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElse(null);
     }
 
     @DeleteMapping("/{id}")
     @CacheEvict(cacheNames = "product", key = "#id", beforeInvocation = true)
-    public ResponseEntity<Void> deleteProduct(@PathVariable long id) {
+    public void deleteProduct(@PathVariable long id) {
         repo.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 
     @PostMapping
